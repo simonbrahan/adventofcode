@@ -1,36 +1,15 @@
 input_sequence = '3113322113'
 
-def get_section(sequence, start_at_index):
-    considered_sequence = sequence[start_at_index:]
-    if not len(considered_sequence):
-        return ''
+from itertools import groupby
 
-    start_char = considered_sequence[0]
-    section = start_char
-    for char in considered_sequence[1:]:
-        if char is not start_char:
-            return section
+def look_and_say(s):
+    new_s = []
+    for c, l in groupby(s):
+        new_s.append(str(len(list(l))))
+        new_s.append(c)
+    return ''.join(new_s)
 
-        section += start_char
+for i in range(40):
+    input_sequence = look_and_say(input_sequence)
 
-    return section
-
-def parse_section(section):
-    return str(len(section)) + section[0]
-
-for ignore in range(40):
-    output_sequence = ''
-    index = 0
-    while True:
-        section = get_section(input_sequence, index)
-
-        if not len(section):
-            break
-
-        output_sequence += parse_section(section)
-        index += len(section)
-
-    input_sequence = output_sequence
-
-print input_sequence
 print len(input_sequence)
