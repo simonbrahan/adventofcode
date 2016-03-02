@@ -1,6 +1,5 @@
 import re
 import itertools
-import pprint
 
 def get_cmd(line):
     pattern = re.compile('(\w+?) would (lose|gain) (\d+?) happiness units by sitting next to (\w+).')
