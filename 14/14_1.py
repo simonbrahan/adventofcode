@@ -1,5 +1,4 @@
 import re
-import itertools
 
 def get_cmd(line):
     pattern = re.compile('(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.')
