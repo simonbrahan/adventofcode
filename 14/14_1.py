@@ -22,7 +22,7 @@ for line in ex_input:
     cycle_time = stats['uptime'] + stats['downtime']
     full_cycles = int(time / cycle_time)
     distance_travelled += cycle_distance * full_cycles
-    last_cycle_uptime = max(time % cycle_time, stats['uptime'])
+    last_cycle_uptime = min(time % cycle_time, stats['uptime'])
     distance_travelled += stats['speed'] * last_cycle_uptime
     distances[stats['name']] = distance_travelled
 
