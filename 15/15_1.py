@@ -15,5 +15,14 @@ def get_cmd(line):
 
 ex_input = open('input.txt', 'r')
 
+ingredients = {}
 for line in ex_input:
-    print get_cmd(line)
+    ingredient = get_cmd(line)
+    ingredients[ingredient['name']] = ingredient
+
+highest_score = 0
+spoonfuls = 100
+for i in range(spoonfuls + 1):
+    for j in range(spoonfuls - i + 1):
+        for k in range(spoonfuls - i - j + 1):
+            l = spoonfuls - i - j - k
