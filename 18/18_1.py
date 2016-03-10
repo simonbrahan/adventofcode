@@ -1,3 +1,5 @@
+import time
+
 def get_live_count(row, col, matrix):
     translations = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
     live_count = 0
@@ -20,6 +22,9 @@ def get_live_count(row, col, matrix):
 
 
 def get_state(row, col, char, matrix):
+    if row in (0, len(matrix) - 1) and col in (0, len(matrix[0]) - 1):
+        return '#'
+
     adjacent_live = get_live_count(row, col, matrix)
 
     if char is '#':
@@ -51,6 +56,7 @@ def get_on_count(matrix):
 
     return count
 
+start = time.time()
 
 old_matrix = [line.strip() for line in open('input.txt', 'r')]
 
@@ -68,3 +74,4 @@ for step in range(100):
 print_matrix(new_matrix)
 
 print get_on_count(new_matrix)
+print time.time() - start, 'seconds elapsed'
