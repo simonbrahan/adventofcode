@@ -4,7 +4,7 @@ input_lines = []
 for line in open('input.txt'):
     input_lines.append(line.strip())
 
-molecule = re.findall('[A-Z][^A-Z]*', input_lines.pop())
+molecule = re.findall('[A-Z][a-z]*', input_lines.pop())
 
 transforms = {}
 for line in input_lines:
