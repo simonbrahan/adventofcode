@@ -1,4 +1,5 @@
 import itertools
+import math
 
 weapons = (
     { 'name': 'Dagger', 'damage': 4, 'cost': 8 },
@@ -33,18 +34,26 @@ ring_combos = itertools.chain(
     itertools.combinations(rings, 2)
 )
 
+boss_start_hp = 104
+boss_damage = 8
+boss_armour = 1
+my_start_hp = 100
+
+winning_cost = None
 for left_ring, right_ring in ring_combos:
     for weapon in weapons:
         for armour in armours:
             my_armour = armour['armour'] + left_ring.get('armour', 0) + left_ring.get('armour', 0)
             my_damage = weapon['damage'] + left_ring.get('damage', 0) + left_ring.get('damage', 0)
             cost = armour['cost'] + weapon['cost'] + left_ring['cost'] + right_ring['cost']
-            print 'weapon:', weapon['name'], 'armour:', armour['name']
-            print 'left:', left_ring['name'], 'right:', right_ring['name']
-            print 'damage:', my_damage, 'armour:', my_armour, 'cost:', cost
 
-boss_hp = 104
-boss_damage = 8
-boss_armour = 1
+            boss_dpt = max(1, boss_damage - my_armour)
+            my_dpt = max(1, my_damage - boss_armour)
+            boss_ttk = math.ceil(my_start_hp / boss_dpt)
+            my_ttk = math.ceil(boss_start_hp / my_dpt)
 
-my_hp = 100
+            if my_ttk <= boss_ttk:
+                if winning_cost is None or winning_cost > cost:
+                    winning_cost = cost
+
+print winning_cost
