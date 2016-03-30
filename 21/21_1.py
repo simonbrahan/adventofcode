@@ -39,21 +39,21 @@ boss_damage = 8
 boss_armour = 1
 my_start_hp = 100
 
-winning_cost = None
+losing_cost = 0
 for left_ring, right_ring in ring_combos:
     for weapon in weapons:
         for armour in armours:
-            my_armour = armour['armour'] + left_ring.get('armour', 0) + left_ring.get('armour', 0)
-            my_damage = weapon['damage'] + left_ring.get('damage', 0) + left_ring.get('damage', 0)
+            my_armour = armour['armour'] + left_ring.get('armour', 0) + right_ring.get('armour', 0)
+            my_damage = weapon['damage'] + left_ring.get('damage', 0) + right_ring.get('damage', 0)
             cost = armour['cost'] + weapon['cost'] + left_ring['cost'] + right_ring['cost']
 
             boss_dpt = max(1, boss_damage - my_armour)
             my_dpt = max(1, my_damage - boss_armour)
-            boss_ttk = math.ceil(my_start_hp / boss_dpt)
-            my_ttk = math.ceil(boss_start_hp / my_dpt)
 
-            if my_ttk <= boss_ttk:
-                if winning_cost is None or winning_cost > cost:
-                    winning_cost = cost
+            boss_ttk = int(math.ceil(my_start_hp / float(boss_dpt)))
+            my_ttk = int(math.ceil(boss_start_hp / float(my_dpt)))
 
-print winning_cost
+            if my_ttk > boss_ttk and cost > losing_cost:
+                losing_cost = cost
+
+print losing_cost
