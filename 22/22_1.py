@@ -15,7 +15,6 @@ class Spell:
 
 class DurationSpell(Spell):
     tick = 0
-    num_ticks = 0
 
     def activate(self):
         self.tick = 1
@@ -23,7 +22,7 @@ class DurationSpell(Spell):
     def is_active(self):
         return self.tick > 0
 
-    def tick(self):
+    def turn_done(self):
         if self.tick is 0:
             return
 
@@ -62,4 +61,26 @@ class Recharge(DurationSpell):
     mana = 101
     num_ticks = 5
 
-spells = (Missile(), Drain(), Shield(), Poison(), Recharge())
+
+class SpellBook:
+    spells = []
+    recharge = None
+
+    def __init__(self, spells):
+        self.spells = spells
+
+    def get_castable(self, available_mana):
+        output = []
+        for spell in self.spells:
+            if isinstance(spell, DurationSpell):
+                if spell.cost <= available_mana and not spell.is_active():
+                    output.append(spell)
+            elif isinstance(spell, Spell) and spell.cost <= available_mana:
+                output.append(spell)
+
+        return output
+
+
+book = SpellBook([Missile(), Drain(), Shield(), Poison(), Recharge()])
+
+print book.get_castable(500)
