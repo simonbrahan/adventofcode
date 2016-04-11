@@ -88,13 +88,25 @@ tree = [
     }
 ]
 
+import copy
+
 def bfs(queue):
-    while not len(queue) == 0:
+    while len(queue) > 0:
         node = queue.pop(0)
         print node['name']
 
         for child in node['children']:
             queue.append(child)
 
+def r_bfs(queue):
+    if len(queue) > 0:
+        node = queue.pop(0)
+        print node['name']
 
-bfs(tree)
+        for child in node['children']:
+            queue.append(child)
+
+        r_bfs(queue)
+
+bfs(copy.deepcopy(tree))
+r_bfs(tree)
