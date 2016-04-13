@@ -117,14 +117,24 @@ start_state.my_mana = 500
 
 queue = [Node(spell, start_state) for spell in spells]
 
+minimum_spent = None
+
 while len(queue) > 0:
     node = queue.pop(0)
+
+    if not minimum_spent is None and node.state.mana_spent >= minimum_spent:
+        continue
 
     handle_active_effects(node.state)
 
     if node.state.boss_health <= 0:
         print 'The boss died for ', node.state.mana_spent, 'spent'
         print 'History:', node.state.history
+
+
+        if minimum_spent is None or node.state.mana_spent < minimum_spent:
+            minimum_spent = node.state.mana_spent
+
         continue
 
     if not handle_mana(node.spell, node.state):
