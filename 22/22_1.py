@@ -58,10 +58,10 @@ Return true if equivalent node is in list, false otherwise
 def node_checked(candidate_node, node_list):
     for node in node_list:
         if node.spell is candidate_node.spell:
-            node_state_dict = copy.copy(node.state.__dict__)
+            node_state_dict = vars(node.state)
             node_state_dict['history'] = []
 
-            candidate_node_state_dict = copy.copy(candidate_node.state.__dict__)
+            candidate_node_state_dict = vars(candidate_node.state)
             candidate_node_state_dict['history'] = []
 
             if candidate_node_state_dict == node_state_dict:
