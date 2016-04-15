@@ -1,5 +1,9 @@
 import copy
 
+import datetime
+
+start_time = datetime.datetime.now()
+
 class Spell:
     def __init__(self, name):
         self.name = name
@@ -41,10 +45,6 @@ class State:
         self.history = []
 
 
-        def __eq__(self, other):
-            return self.__dict__ == other.__dict__
-
-
 class Node:
     def __init__(self, spell, state):
         self.spell = spell
@@ -57,8 +57,15 @@ Return true if equivalent node is in list, false otherwise
 '''
 def node_checked(candidate_node, node_list):
     for node in node_list:
-        if node.spell is candidate_node.spell and node.state == candidate_node.state:
-            return True
+        if node.spell is candidate_node.spell:
+            node_state_dict = copy.copy(node.state.__dict__)
+            node_state_dict['history'] = []
+
+            candidate_node_state_dict = copy.copy(candidate_node.state.__dict__)
+            candidate_node_state_dict['history'] = []
+
+            if candidate_node_state_dict == node_state_dict:
+                return True
 
     return False
 
@@ -245,3 +252,4 @@ while len(queue) > 0:
         queue.append(Node(spell, copy.deepcopy(node.state)))
 
 print 'Cheapest kill:', minimum_spent
+print 'Script took', datetime.datetime.now() - start_time
