@@ -41,10 +41,26 @@ class State:
         self.history = []
 
 
+        def __eq__(self, other):
+            return self.__dict__ == other.__dict__
+
+
 class Node:
     def __init__(self, spell, state):
         self.spell = spell
         self.state = state
+
+
+'''
+Is passed node equal to any node in passed list
+Return true if equivalent node is in list, false otherwise
+'''
+def node_checked(candidate_node, node_list):
+    for node in node_list:
+        if node.spell is candidate_node.spell and node.state == candidate_node.state:
+            return True
+
+    return False
 
 
 '''
@@ -168,9 +184,16 @@ start_state.my_mana = 500
 queue = [Node(spell, start_state) for spell in spells]
 
 minimum_spent = None
+checked_nodes = []
 
 while len(queue) > 0:
     node = queue.pop(0)
+
+    ## If game state has been visited before, no need to continue
+    if node_checked(node, checked_nodes):
+        continue
+
+    checked_nodes.append(node)
 
     # If game is more expensive than current minimum, no need to continue checking
     if not minimum_spent is None and node.state.mana_spent >= minimum_spent:
