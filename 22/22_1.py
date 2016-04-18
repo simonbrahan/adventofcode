@@ -1,5 +1,4 @@
 import copy
-
 import datetime
 
 start_time = datetime.datetime.now()
@@ -58,10 +57,10 @@ Return true if equivalent node is in list, false otherwise
 def node_checked(candidate_node, node_list):
     for node in node_list:
         if node.spell is candidate_node.spell:
-            node_state_dict = vars(node.state)
+            node_state_dict = dict(vars(node.state))
             node_state_dict['history'] = []
 
-            candidate_node_state_dict = vars(candidate_node.state)
+            candidate_node_state_dict = dict(vars(candidate_node.state))
             candidate_node_state_dict['history'] = []
 
             if candidate_node_state_dict == node_state_dict:
@@ -83,11 +82,13 @@ def handle_mana(spell, state):
 
     return True
 
+
 '''
 Deal any damage caused by the passed spell to the boss in the passed state
 '''
 def handle_damage(spell, state):
     state.boss_health -= spell.damage
+
 
 '''
 Handle any healing caused by the passed spell to the player in the passed state
@@ -130,7 +131,7 @@ Carry out any changes to the passed state from active effects
 '''
 def handle_active_effects(state):
     if state.poison_effect_ticks > 0:
-        state.boss_health -= spell.poison_effect_damage
+        state.boss_health -= state.poison_effect_damage
         state.poison_effect_ticks -= 1
 
     if state.recharge_effect_ticks > 0:
