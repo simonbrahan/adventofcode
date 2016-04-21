@@ -157,6 +157,57 @@ def handle_boss_damage(state):
     return state.my_health > 0
 
 
+def play_tick(state, spell):
+    global minimum_spent
+
+    # If game is more expensive than current minimum, no need to continue checking
+    if not minimum_spent is None and state.mana_spent >= minimum_spent:
+        return False
+
+    # Effects happen at the start of player's and boss's turns
+    handle_active_effects(state)
+
+    # If boss is dead following effects, player wins
+    if state.boss_health <= 0:
+        print 'The boss died for ', state.mana_spent, 'spent'
+        print 'History:', state.history
+
+        if minimum_spent is None or state.mana_spent < minimum_spent:
+            minimum_spent = state.mana_spent
+
+        return False
+
+    if not handle_mana(spell, state):
+        return False
+
+    if not handle_effect_activation(spell, state):
+        return False
+
+    state.history.append(spell.name)
+
+    handle_damage(spell, state)
+    handle_heal(spell, state)
+
+    # Boss's turn
+
+    # Effects happen at the start of player's and boss's turns
+    handle_active_effects(state)
+
+    # If boss is dead following effects, player wins
+    if state.boss_health <= 0:
+        print 'The boss died for ', state.mana_spent, 'spent'
+        print 'History:', state.history
+
+        if minimum_spent is None or state.mana_spent < minimum_spent:
+            minimum_spent = state.mana_spent
+
+        return False
+
+    if not handle_boss_damage(state):
+        return False
+
+    return True
+
 missile = Spell('Missile')
 missile.cost = 53
 missile.damage = 4
@@ -197,56 +248,13 @@ checked_nodes = []
 while len(queue) > 0:
     node = queue.pop(0)
 
-    ## If game state has been visited before, no need to continue
+    # If game state has been visited before, no need to continue
     if node_checked(node, checked_nodes):
         continue
 
     checked_nodes.append(node)
 
-    # If game is more expensive than current minimum, no need to continue checking
-    if not minimum_spent is None and node.state.mana_spent >= minimum_spent:
-        continue
-
-    # Effects happen at the start of player's and boss's turns
-    handle_active_effects(node.state)
-
-    # If boss is dead following effects, player wins
-    if node.state.boss_health <= 0:
-        print 'The boss died for ', node.state.mana_spent, 'spent'
-        print 'History:', node.state.history
-
-        if minimum_spent is None or node.state.mana_spent < minimum_spent:
-            minimum_spent = node.state.mana_spent
-
-        continue
-
-    if not handle_mana(node.spell, node.state):
-        continue
-
-    if not handle_effect_activation(node.spell, node.state):
-        continue
-
-    node.state.history.append(node.spell.name)
-
-    handle_damage(node.spell, node.state)
-    handle_heal(node.spell, node.state)
-
-    # Boss's turn
-
-    # Effects happen at the start of player's and boss's turns
-    handle_active_effects(node.state)
-
-    # If boss is dead following effects, player wins
-    if node.state.boss_health <= 0:
-        print 'The boss died for ', node.state.mana_spent, 'spent'
-        print 'History:', node.state.history
-
-        if minimum_spent is None or node.state.mana_spent < minimum_spent:
-            minimum_spent = node.state.mana_spent
-
-        continue
-
-    if not handle_boss_damage(node.state):
+    if not play_tick(node.state, node.spell):
         continue
 
     for spell in spells:
