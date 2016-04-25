@@ -3,7 +3,6 @@ import unittest
 
 class TestNodeChecked(unittest.TestCase):
     def test_compare_empty_states(self):
-        # Test node_checked
         state = State()
         other_state = State()
         spell = Spell('spell')
