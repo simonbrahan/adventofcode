@@ -30,7 +30,7 @@ recharge.recharge_effect_mana = 101
 spells = [missile, drain, shield, poison, recharge]
 
 start_state = State()
-start_state.boss_health = 18
+start_state.boss_health = 58
 start_state.boss_damage = 9
 start_state.my_health = 50
 start_state.my_mana = 500

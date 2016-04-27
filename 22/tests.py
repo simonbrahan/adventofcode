@@ -162,5 +162,112 @@ class TestHandleEffectActivation(unittest.TestCase):
         self.assertEqual(0, state.recharge_effect_mana)
 
 
+    def test_poison_activated(self):
+        state = State()
+
+        spell = Spell('spell')
+        spell.poison_effect_damage = 5
+        spell.poison_effect_ticks = 3
+
+        self.assertTrue(handle_effect_activation(spell, state))
+
+        self.assertEqual(3, state.poison_effect_ticks)
+        self.assertEqual(5, state.poison_effect_damage)
+        self.assertEqual(0, state.shield_effect_ticks)
+        self.assertEqual(0, state.shield_effect_armour)
+        self.assertEqual(0, state.recharge_effect_ticks)
+        self.assertEqual(0, state.recharge_effect_mana)
+
+
+    def test_poison_already_activated(self):
+        state = State()
+        state.poison_effect_damage = 1
+        state.poison_effect_ticks = 1
+
+        spell = Spell('spell')
+        spell.poison_effect_damage = 5
+        spell.poison_effect_ticks = 3
+
+        self.assertFalse(handle_effect_activation(spell, state))
+
+        self.assertEqual(1, state.poison_effect_ticks)
+        self.assertEqual(1, state.poison_effect_damage)
+        self.assertEqual(0, state.shield_effect_ticks)
+        self.assertEqual(0, state.shield_effect_armour)
+        self.assertEqual(0, state.recharge_effect_ticks)
+        self.assertEqual(0, state.recharge_effect_mana)
+
+
+    def test_recharge_activated(self):
+        state = State()
+
+        spell = Spell('spell')
+        spell.recharge_effect_mana = 5
+        spell.recharge_effect_ticks = 3
+
+        self.assertTrue(handle_effect_activation(spell, state))
+
+        self.assertEqual(0, state.poison_effect_ticks)
+        self.assertEqual(0, state.poison_effect_damage)
+        self.assertEqual(0, state.shield_effect_ticks)
+        self.assertEqual(0, state.shield_effect_armour)
+        self.assertEqual(3, state.recharge_effect_ticks)
+        self.assertEqual(5, state.recharge_effect_mana)
+
+
+    def test_recharge_already_activated(self):
+        state = State()
+        state.recharge_effect_mana = 1
+        state.recharge_effect_ticks = 1
+
+        spell = Spell('spell')
+        spell.recharge_effect_mana = 5
+        spell.recharge_effect_ticks = 3
+
+        self.assertFalse(handle_effect_activation(spell, state))
+
+        self.assertEqual(0, state.poison_effect_ticks)
+        self.assertEqual(0, state.poison_effect_damage)
+        self.assertEqual(0, state.shield_effect_ticks)
+        self.assertEqual(0, state.shield_effect_armour)
+        self.assertEqual(1, state.recharge_effect_ticks)
+        self.assertEqual(1, state.recharge_effect_mana)
+
+
+    def test_shield_activated(self):
+        state = State()
+
+        spell = Spell('spell')
+        spell.shield_effect_armour = 5
+        spell.shield_effect_ticks = 3
+
+        self.assertTrue(handle_effect_activation(spell, state))
+
+        self.assertEqual(0, state.poison_effect_ticks)
+        self.assertEqual(0, state.poison_effect_damage)
+        self.assertEqual(3, state.shield_effect_ticks)
+        self.assertEqual(5, state.shield_effect_armour)
+        self.assertEqual(0, state.recharge_effect_ticks)
+        self.assertEqual(0, state.recharge_effect_mana)
+
+
+    def test_shield_already_activated(self):
+        state = State()
+        state.shield_effect_armour = 1
+        state.shield_effect_ticks = 1
+
+        spell = Spell('spell')
+        spell.shield_effect_armour = 5
+        spell.shield_effect_ticks = 3
+
+        self.assertFalse(handle_effect_activation(spell, state))
+
+        self.assertEqual(0, state.poison_effect_ticks)
+        self.assertEqual(0, state.poison_effect_damage)
+        self.assertEqual(1, state.shield_effect_ticks)
+        self.assertEqual(1, state.shield_effect_armour)
+        self.assertEqual(0, state.recharge_effect_ticks)
+        self.assertEqual(0, state.recharge_effect_mana)
+
 if __name__ == '__main__':
     unittest.main()
