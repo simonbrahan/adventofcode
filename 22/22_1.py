@@ -44,9 +44,11 @@ while len(queue) > 0:
     if node_checked(node):
         continue
 
+    # If game state does not last another turn, ignore
     if not play_tick(node.state, node.spell):
         continue
 
+    # If game can continue, queue next options
     for spell in spells:
         queue.append(Node(spell, copy.deepcopy(node.state)))
 
