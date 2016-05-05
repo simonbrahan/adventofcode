@@ -40,10 +40,6 @@ queue = [Node(spell, start_state) for spell in spells]
 while len(queue) > 0:
     node = queue.pop(0)
 
-    # If game state has been visited before, no need to continue
-    if node_checked(node):
-        continue
-
     # If game state does not last another turn, ignore
     if not play_tick(node.state, node.spell):
         continue

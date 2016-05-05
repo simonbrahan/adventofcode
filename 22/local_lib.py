@@ -44,29 +44,6 @@ class Node:
         self.spell = spell
         self.state = state
 
-checked_nodes = []
-
-'''
-Is passed node equal to any node in passed list
-Return true if equivalent node is in list, false otherwise
-'''
-def node_checked(candidate_node):
-    global checked_nodes
-
-    for node in checked_nodes:
-        if node.spell is candidate_node.spell:
-            node_state_dict = dict(vars(node.state))
-            node_state_dict['history'] = []
-
-            candidate_node_state_dict = dict(vars(candidate_node.state))
-            candidate_node_state_dict['history'] = []
-
-            if candidate_node_state_dict == node_state_dict:
-                return True
-
-    checked_nodes.append(candidate_node)
-    return False
-
 
 '''
 Check that spell can be cast and update mana totals in passed state
