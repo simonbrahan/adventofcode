@@ -27,7 +27,7 @@ recharge.cost = 229
 recharge.recharge_effect_ticks = 5
 recharge.recharge_effect_mana = 101
 
-spells = [poison, recharge, missile, drain, shield]
+spells = [missile, drain, shield, poison, recharge]
 
 start_state = State()
 start_state.boss_health = 58
@@ -35,7 +35,7 @@ start_state.boss_damage = 9
 start_state.my_health = 50
 start_state.my_mana = 500
 
-queue = [Node(spell, start_state) for spell in spells]
+queue = [Node(spell, copy.deepcopy(start_state)) for spell in spells]
 
 while len(queue) > 0:
     node = queue.pop(0)
