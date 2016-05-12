@@ -142,6 +142,11 @@ def play_tick(state, spell):
     if not minimum_spent is None and state.mana_spent >= minimum_spent:
         return False
 
+    # Hard mode
+    state.my_health -= 1
+    if state.my_health <= 0:
+        return False;
+
     # Effects happen at the start of player's and boss's turns
     handle_active_effects(state)
 
