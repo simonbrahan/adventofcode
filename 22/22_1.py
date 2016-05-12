@@ -27,7 +27,7 @@ recharge.cost = 229
 recharge.recharge_effect_ticks = 5
 recharge.recharge_effect_mana = 101
 
-spells = [missile, drain, shield, poison, recharge]
+spells = [poison, recharge, missile, drain, shield]
 
 start_state = State()
 start_state.boss_health = 58
