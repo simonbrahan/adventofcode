@@ -38,7 +38,7 @@ while line_num < len(program):
         line_num += parsed_line['opts']['offset']
         continue
 
-    if parsed_line['cmd'] == 'jio' and registers[parsed_line['opts']['reg']] % 2 == 1:
+    if parsed_line['cmd'] == 'jio' and registers[parsed_line['opts']['reg']] == 1:
         line_num += parsed_line['opts']['offset']
         continue
 
