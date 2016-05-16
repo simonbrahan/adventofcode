@@ -22,10 +22,10 @@ while line_num < len(program):
     parsed_line = program[line_num]
 
     if parsed_line['cmd'] == 'hlf':
-        registers[parsed_line['opts']['reg']] = registers[parsed_line['opts']['reg']] / 2
+        registers[parsed_line['opts']['reg']] /= 2
 
     if parsed_line['cmd'] == 'tpl':
-        registers[parsed_line['opts']['reg']] = registers[parsed_line['opts']['reg']] * 3
+        registers[parsed_line['opts']['reg']] *= 3
 
     if parsed_line['cmd'] == 'inc':
         registers[parsed_line['opts']['reg']] += 1
