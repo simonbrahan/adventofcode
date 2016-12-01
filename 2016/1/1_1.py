@@ -4,7 +4,7 @@ input_arr = input_str.split(', ')
 
 position = { 'x': 0, 'y': 0 }
 
-current_direction= 'north'
+current_direction = 'north'
 
 def change_direction(current_direction, turn):
     directions = ['north', 'east', 'south', 'west']
@@ -15,13 +15,7 @@ def change_direction(current_direction, turn):
     else:
         direction_mod = 1
 
-    new_direction_idx = current_direction_idx + direction_mod
-
-    if new_direction_idx < 0:
-        new_direction_idx = len(directions) - 1
-
-    if new_direction_idx >= len(directions):
-        new_direction_idx = 0
+    new_direction_idx = (current_direction_idx + direction_mod) % 4
 
     return directions[new_direction_idx]
 
