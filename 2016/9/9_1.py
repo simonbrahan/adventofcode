@@ -2,27 +2,21 @@ import re
 
 input_str = open('input', 'r').read().strip()
 
-input_str = 'A(2x2)BCD(2x2)EFG'
-
 output = ''
 
 idx = 0
 
 while idx < len(input_str):
-    print input_str[idx:]
     next_marker = re.search('(\((\d+)x(\d+)\))', input_str[idx:])
 
     if next_marker:
         # Add input before next marker to output
-        output += input_str[idx:next_marker.start()]
-
-        print next_marker.group()
-        print output
+        output += input_str[idx:idx + next_marker.start()]
 
         char_count = int(next_marker.group(2))
         repeat_count = int(next_marker.group(3))
 
-        repeat_block_start = next_marker.end()
+        repeat_block_start = idx + next_marker.end()
         repeat_block_end = repeat_block_start + char_count
         repeat_block = input_str[repeat_block_start:repeat_block_end]
 
@@ -36,4 +30,4 @@ while idx < len(input_str):
         output += input_str[idx:]
         break
 
-print output
+print len(output)
