@@ -1,8 +1,21 @@
 import re
 
+explored_states = {}
+def state_explored(floor_contents):
+    global explored_states
+
+    content_hash = ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
+
+    if content_hash in explored_states:
+        return True
+
+    explored_states[content_hash] = True
+
+    return False
+
+
 def make_move(floor_contents, current_floor, next_floor, move_items):
     import copy
-    print floor_contents
     new_floor_contents = copy.deepcopy(floor_contents)
 
     new_floor_contents[current_floor] = list(set(new_floor_contents[current_floor]) - set(move_items))
@@ -27,9 +40,8 @@ def valid_floor_contents(floor_contents):
 
             chip_type = is_chip.group(1)
 
-            # floor contains at least one generator, but no generarot for this chip
+            # floor contains at least one generator, but no generator for this chip
             if chip_type + ' generator' not in floor:
-                print 'problem with', floor
                 return False
 
     return True
@@ -39,7 +51,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
     import itertools
 
     if state_explored(floor_contents):
-        return False
+        return
 
     # If first, second and third floor are empty, everything is on floor 4 and we've won
     if floor_contents[0] == floor_contents[1] == floor_contents[2] == []:
@@ -60,7 +72,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
             )
 
             if valid_floor_contents(new_floor_contents):
-                return explore_moves(new_floor_contents, floor_above, num_moves + 1)
+                explore_moves(new_floor_contents, floor_above, num_moves + 1)
 
     if floor_below >= 0:
         for move_items in possible_moves:
@@ -72,7 +84,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
             )
 
             if valid_floor_contents(new_floor_contents):
-                return explore_moves(new_floor_contents, floor_below, num_moves + 1)
+                explore_moves(new_floor_contents, floor_below, num_moves + 1)
 
 
 floor_contents = [ [], [], [], [] ]
