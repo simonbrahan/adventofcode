@@ -34,7 +34,7 @@ def valid_floor_contents(floor_contents):
             continue
 
         for item in floor:
-            is_chip = re.match('(\w+)-compatible microchip', item)
+            is_chip = re.match('(\w+) chip', item)
             if not is_chip:
                 continue
 
@@ -89,6 +89,8 @@ def explore_moves(floor_contents, current_floor, num_moves):
 
 floor_contents = [ [], [], [], [] ]
 for idx, line in enumerate(open('input', 'r')):
-    floor_contents[idx] = re.findall('(\w+-compatible microchip)', line) + re.findall('(\w+ generator)', line)
+    chips = [ groups[1] + ' chip' for groups in re.findall('((\w+)-compatible microchip)', line) ]
+    generators = re.findall('(\w+ generator)', line)
+    floor_contents[idx] = chips + generators
 
 explore_moves(floor_contents, 0, 0)
