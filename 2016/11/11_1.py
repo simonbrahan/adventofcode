@@ -1,10 +1,14 @@
 import re
 
+def get_state_hash(floor_contents):
+    return ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
+
+
 explored_states = {}
 def state_explored(floor_contents):
     global explored_states
 
-    content_hash = ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
+    content_hash = get_state_hash(floor_contents)
 
     if content_hash in explored_states:
         return True
@@ -46,6 +50,22 @@ def valid_floor_contents(floor_contents):
 
     return True
 
+
+def print_state(floor_contents, current_floor):
+    print ''
+
+    for floor_num, contents in enumerate(reversed(floor_contents)):
+        output = ''
+        if 4 - floor_num == current_floor + 1:
+            output += 'E '
+        else:
+            output += '  '
+
+        output += str(4 - floor_num) + ' ' + ' '.join(
+            sorted([''.join([word[0].upper() for word in item.split()]).replace('C', 'M') for item in contents])
+        )
+
+        print output
 
 def explore_moves(floor_contents, current_floor, num_moves):
     import itertools
