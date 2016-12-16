@@ -50,17 +50,21 @@ def valid_floor_contents(floor_contents):
 def explore_moves(floor_contents, current_floor, num_moves):
     import itertools
 
+    if not valid_floor_contents(floor_contents):
+        return
+
     if state_explored(floor_contents):
         return
 
     # If first, second and third floor are empty, everything is on floor 4 and we've won
     if floor_contents[0] == floor_contents[1] == floor_contents[2] == []:
         print num_moves
-        return True
+        return
 
+    num_moves += 1
     floor_below = current_floor - 1
     floor_above = current_floor + 1
-    possible_moves = itertools.combinations(floor_contents[current_floor] + [None], 2)
+    possible_moves = list(itertools.combinations(floor_contents[current_floor] + [None], 2))
 
     if floor_above < len(floor_contents):
         for move_items in possible_moves:
@@ -71,8 +75,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
                 filter(None, move_items)
             )
 
-            if valid_floor_contents(new_floor_contents):
-                explore_moves(new_floor_contents, floor_above, num_moves + 1)
+            explore_moves(new_floor_contents, floor_above, num_moves)
 
     if floor_below >= 0:
         for move_items in possible_moves:
@@ -83,8 +86,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
                 filter(None, move_items)
             )
 
-            if valid_floor_contents(new_floor_contents):
-                explore_moves(new_floor_contents, floor_below, num_moves + 1)
+            explore_moves(new_floor_contents, floor_below, num_moves)
 
 
 floor_contents = [ [], [], [], [] ]
