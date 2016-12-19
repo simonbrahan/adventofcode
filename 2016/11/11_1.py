@@ -1,14 +1,14 @@
 import re
 
-def get_state_hash(floor_contents):
-    return ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
+def get_state_hash(floor_contents, current_floor):
+    return str(current_floor) + ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
 
 
 explored_states = {}
-def state_explored(floor_contents):
+def state_explored(floor_contents, current_floor):
     global explored_states
 
-    content_hash = get_state_hash(floor_contents)
+    content_hash = get_state_hash(floor_contents, current_floor)
 
     if content_hash in explored_states:
         return True
@@ -73,7 +73,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
     if not valid_floor_contents(floor_contents):
         return
 
-    if state_explored(floor_contents):
+    if state_explored(floor_contents, current_floor):
         return
 
     # If first, second and third floor are empty, everything is on floor 4 and we've won
