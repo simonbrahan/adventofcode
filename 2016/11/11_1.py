@@ -1,4 +1,4 @@
-import re
+import re, itertools
 
 def get_state_hash(floor_contents, current_floor):
     return str(current_floor) + ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
@@ -51,35 +51,27 @@ def valid_floor_contents(floor_contents):
     return True
 
 
-def print_state(floor_contents, current_floor):
-    print ''
+floor_contents = [ [], [], [], [] ]
+for idx, line in enumerate(open('input', 'r')):
+    chips = [ groups[1] + ' chip' for groups in re.findall('((\w+)-compatible microchip)', line) ]
+    generators = re.findall('(\w+ generator)', line)
+    floor_contents[idx] = chips + generators
 
-    for floor_num, contents in enumerate(reversed(floor_contents)):
-        output = ''
-        if 4 - floor_num == current_floor + 1:
-            output += 'E '
-        else:
-            output += '  '
+queue = [(floor_contents, 0, 0)]
 
-        output += str(4 - floor_num) + ' ' + ' '.join(
-            sorted([''.join([word[0].upper() for word in item.split()]).replace('C', 'M') for item in contents])
-        )
-
-        print output
-
-def explore_moves(floor_contents, current_floor, num_moves):
-    import itertools
+while len(queue) > 0:
+    floor_contents, current_floor, num_moves = queue.pop(0)
 
     if not valid_floor_contents(floor_contents):
-        return
+        continue
 
     if state_explored(floor_contents, current_floor):
-        return
+        continue
 
     # If first, second and third floor are empty, everything is on floor 4 and we've won
     if floor_contents[0] == floor_contents[1] == floor_contents[2] == []:
         print num_moves
-        return
+        continue
 
     num_moves += 1
     floor_below = current_floor - 1
@@ -95,7 +87,7 @@ def explore_moves(floor_contents, current_floor, num_moves):
                 filter(None, move_items)
             )
 
-            explore_moves(new_floor_contents, floor_above, num_moves)
+            queue.append((new_floor_contents, floor_above, num_moves))
 
     if floor_below >= 0:
         for move_items in possible_moves:
@@ -106,13 +98,4 @@ def explore_moves(floor_contents, current_floor, num_moves):
                 filter(None, move_items)
             )
 
-            explore_moves(new_floor_contents, floor_below, num_moves)
-
-
-floor_contents = [ [], [], [], [] ]
-for idx, line in enumerate(open('input', 'r')):
-    chips = [ groups[1] + ' chip' for groups in re.findall('((\w+)-compatible microchip)', line) ]
-    generators = re.findall('(\w+ generator)', line)
-    floor_contents[idx] = chips + generators
-
-explore_moves(floor_contents, 0, 0)
+            queue.append((new_floor_contents, floor_below, num_moves))
