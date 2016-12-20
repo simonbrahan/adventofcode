@@ -1,4 +1,6 @@
-import re, itertools
+import re, itertools, datetime
+
+start_time = datetime.datetime.now()
 
 def get_state_hash(floor_contents, current_floor):
     return str(current_floor) + ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
@@ -99,3 +101,5 @@ while len(queue) > 0:
             )
 
             queue.append((new_floor_contents, floor_below, num_moves))
+
+print 'Script took', datetime.datetime.now() - start_time, 'seconds'
