@@ -3,7 +3,19 @@ import re, itertools, datetime
 start_time = datetime.datetime.now()
 
 def get_state_hash(floor_contents, current_floor):
-    return str(current_floor) + ':'.join([ ''.join(sorted(floor)) for floor in floor_contents])
+    content_map = {}
+    for floor_idx, current_floor_contents in enumerate(floor_contents):
+        for item in current_floor_contents:
+            content_map[item] = floor_idx
+
+    hash_list = []
+    for item, floor_idx in sorted(content_map.items()):
+        if ' chip' in item:
+            hash_list.append([floor_idx])
+        else:
+            hash_list[-1].append(floor_idx)
+
+    return str(current_floor) + str(sorted(hash_list))
 
 
 explored_states = {}
