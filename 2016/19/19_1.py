@@ -10,18 +10,9 @@ num_elves = 3018458
 
 start_time = datetime.datetime.now()
 
-elves = range(1, num_elves + 1)
+bin_format = '{0:b}'.format(num_elves)
+rotated_bin_format = bin_format[1:] + bin_format[0]
 
-elf_idx = 0
-while len(elves) > 1:
-    next_elf_idx = get_next_elf(elf_idx)
-    elves.pop(next_elf_idx)
-
-    if next_elf_idx == 0:
-        elf_idx = 0
-    else:
-        elf_idx = get_next_elf(elf_idx)
-
-print elves[0]
+print int(rotated_bin_format, 2)
 
 print 'Script took', datetime.datetime.now() - start_time, 'seconds'
