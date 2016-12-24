@@ -41,7 +41,7 @@ for i in xrange(num_locations):
 #
 best = None
 for p in itertools.permutations(range(1, num_locations)):
-    hit_location_plan = [0] + list(p)
+    hit_location_plan = [0] + list(p) + [0]
     time = sum(
         hit_location_distances[ hit_location_plan[location + 1], hit_location_plan[location] ] for location in xrange(len(hit_location_plan) - 1))
 
