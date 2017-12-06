@@ -17,6 +17,20 @@ def find_ulam_layer(num):
     return int(ceil(sqrt(num))) - 1
 
 
+def find_ulam_layer_square(layer_num):
+    """ Given an ulam layer number
+        find the layer square the layer sits on
+
+        so:
+            0 is on square 0
+            1 is on square 1
+            2 is on square 1
+            3 is on square 2
+            etc
+    """
+    return int(ceil(layer_num / 2.0))
+
+
 def find_ulam_layer_parity(layer_num):
     """ Given an ulam layer number
         find the direction in which the layer is "drawn"
@@ -69,6 +83,7 @@ def find_ulam_coords(num):
             etc
     """
     layer_num = find_ulam_layer(num)
+    layer_square = find_ulam_layer_square(layer_num)
     layer_parity = find_ulam_layer_parity(layer_num)
     layer_start = find_ulam_layer_start(layer_num)
     layer_corner = find_ulam_layer_corner(layer_num)
@@ -79,11 +94,16 @@ def find_ulam_coords(num):
         the corner will be either "north east" or "south west"
     """
     corner_coords = [
-        layer_parity * int(ceil(layer_num / 2)),
-        layer_parity * int(ceil(layer_num / 2))
+        layer_parity * layer_square,
+        layer_parity * layer_square
     ]
 
-    return corner_coords
+    if num < layer_corner:
+        return corner_coords
+    elif num > layer_corner:
+        return corner_coords
+    else:
+        return corner_coords
 
 
 print find_ulam_coords(int(argv[1]))
