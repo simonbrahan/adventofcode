@@ -93,6 +93,6 @@ def find_ulam_coords(num):
         ]
     else:
         return [
-            (layer_square + layer_corner - num) * -layer_parity,
+            (layer_square + layer_corner - num) * layer_parity,
             layer_parity * layer_square
         ]
