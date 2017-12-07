@@ -1,4 +1,4 @@
-from math import sqrt, ceil, fmod
+from math import sqrt, ceil
 
 def find_ulam_layer(num):
     """ Given a number
@@ -40,7 +40,7 @@ def find_ulam_layer_parity(layer_num):
             2 is given the parity -1
             etc
     """
-    return [-1, 1][int(fmod(layer_num, 2))]
+    return [-1, 1][int(layer_num % 2)]
 
 
 def find_ulam_layer_start(layer_num):
