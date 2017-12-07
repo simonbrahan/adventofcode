@@ -85,7 +85,6 @@ def find_ulam_coords(num):
     layer_num = find_ulam_layer(num)
     layer_square = find_ulam_layer_square(layer_num)
     layer_parity = find_ulam_layer_parity(layer_num)
-    layer_start = find_ulam_layer_start(layer_num)
     layer_corner = find_ulam_layer_corner(layer_num)
 
     if num < layer_corner:
