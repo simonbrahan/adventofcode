@@ -24,7 +24,6 @@ position_num = 2
 while latest_val < input:
     coords = find_ulam_coords(position_num)
     next_val = sum_adjacent(matrix, coords)
-    print 'position', position_num, 'coords', coords, 'next val', next_val
     matrix[coords[0]][coords[1]] = next_val
     latest_val = next_val
     position_num += 1
