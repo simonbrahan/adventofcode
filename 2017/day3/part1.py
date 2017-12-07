@@ -38,7 +38,7 @@ def find_ulam_layer_parity(layer_num):
         so:
             0 is given the parity -1
             1 is given the parity 1
-            2 is given the perity -1
+            2 is given the parity -1
             etc
     """
     return [-1, 1][int(fmod(layer_num, 2))]
@@ -88,22 +88,19 @@ def find_ulam_coords(num):
     layer_start = find_ulam_layer_start(layer_num)
     layer_corner = find_ulam_layer_corner(layer_num)
 
-    """
-        Start with layer corner coordinates
-        As layers are defined as "half squares" of the spiral,
-        the corner will be either "north east" or "south west"
-    """
-    corner_coords = [
-        layer_parity * layer_square,
-        layer_parity * layer_square
-    ]
-
     if num < layer_corner:
-        return corner_coords
-    elif num > layer_corner:
-        return corner_coords
+        return [
+            layer_parity * layer_square,
+            (layer_square - layer_corner + num) * layer_parity
+        ]
     else:
-        return corner_coords
+        return [
+            (layer_square + layer_corner - num) * -layer_parity,
+            layer_parity * layer_square
+        ]
 
 
-print find_ulam_coords(int(argv[1]))
+ulam_coords = find_ulam_coords(int(argv[1]))
+manhattan_distance = abs(ulam_coords[0]) + abs(ulam_coords[1])
+
+print 'coords', ulam_coords, 'manhattan distance', manhattan_distance
