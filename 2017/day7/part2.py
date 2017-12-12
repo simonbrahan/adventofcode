@@ -9,8 +9,8 @@ class Node:
         self.children.append(child)
 
 
-    def get_weight(self):
-        return self.weight + sum([child.get_weight() for child in self.children])
+    def get_combined_weight(self):
+        return self.weight + sum([child.get_combined_weight() for child in self.children])
 
 
     def __repr__(self):
@@ -28,6 +28,23 @@ def parseLine(line):
         children = []
 
     return [root, weight, children]
+
+
+def find_imbalance(node):
+
+# for children of node:
+#   get weights
+#   if weights are unbalanced:
+#       get first child weight of unbalanced stack
+#       return first child weight + weight inbalance
+
+    child_weights = [(child, child.weight, child.get_combined_weight()) for child in node.children]
+
+    if len(set(combined_weight for [_, _, combined_weight] in child_weights)) > 1:
+        print child_weights
+
+    for child in node.children:
+        find_imbalance(child)
 
 
 nodes = {}
@@ -49,3 +66,4 @@ for name, node in nodes.items():
     else:
         root_node = node
 
+find_imbalance(root_node)
