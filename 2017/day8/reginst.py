@@ -12,22 +12,16 @@ def parse_line(line):
 
 
 def accept_cond(val, cond, param):
-    ops = {
-        '>': lambda left, right: left > right,
-        '<': lambda left, right: left < right,
-        '>=': lambda left, right: left >= right,
-        '<=': lambda left, right: left <= right,
-        '==': lambda left, right: left == right,
-        '!=': lambda left, right: left != right
-    }
+    from operator import gt, lt, ge, le, ne, eq
+
+    ops = {'>': gt, '<': lt, '>=': ge, '<=': le, '==': eq, '!=': ne}
 
     return ops[cond](val, param)
 
 
 def mod_register(val, op, param):
-    ops = {
-        'inc': lambda left, right: left + right,
-        'dec': lambda left, right: left - right
-    }
+    from operator import add, sub
+
+    ops = {'inc': add, 'dec': sub}
 
     return ops[op](val, param)
