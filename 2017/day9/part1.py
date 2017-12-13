@@ -5,7 +5,7 @@ group_level = 0
 in_garbage = False
 is_escaped = False
 
-for idx, char in enumerate(stream):
+for char in stream:
     if char is '!' and not is_escaped:
         is_escaped = True
         continue
