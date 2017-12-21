@@ -23,3 +23,17 @@ def get_group(root_id, connections):
         connections_in_group.update(new_connections)
 
     return connections_in_group
+
+def get_groups(connections):
+    groups = []
+    found_programs = set()
+
+    for connection in connections.keys():
+        if connection in found_programs:
+            continue
+
+        connection_group = get_group(connection, connections)
+        groups.append(connection_group)
+        found_programs.update(connection_group)
+
+    return groups
