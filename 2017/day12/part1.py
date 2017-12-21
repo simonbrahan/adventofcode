@@ -1,20 +1,7 @@
-with open('input.txt') as input:
-    program_connections = {}
-    for line in input:
-        line_parts = map(lambda x: x.strip(','), line.split())
-        program_connections[int(line_parts[0])] = map(int, line_parts[2:])
+from pathfinder import parse_input, get_group
 
-connections_in_group = set()
-connections_to_follow = [0]
+connections = parse_input(open('input.txt'))
 
-while len(connections_to_follow) > 0:
-    follow_connection = connections_to_follow.pop(0)
-    new_connections = [
-        con for con in program_connections[follow_connection]
-        if con not in connections_in_group
-    ]
-
-    connections_to_follow += new_connections
-    connections_in_group.update(new_connections)
+connections_in_group = get_group(0, connections)
 
 print len(connections_in_group)
