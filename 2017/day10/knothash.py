@@ -25,4 +25,4 @@ def hash(input):
     split_hash = [sparse_hash[i:i+16] for i in range(0, 255, 16)]
     dense_hash = map(lambda x: reduce(xor, x), split_hash)
 
-    return ''.join(map(lambda num: hex(num)[2:], dense_hash))
+    return ''.join(map(lambda num: hex(num)[2:], dense_hash)).rjust(32, '0')
