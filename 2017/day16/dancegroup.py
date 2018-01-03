@@ -11,6 +11,8 @@ class DanceGroup:
     def partner(self, a, b):
         self.exchange(self.dancers.index(a), self.dancers.index(b))
 
+    def lineup(self):
+        return ''.join(self.dancers)
 
 def do_dance(dg, instrs):
     for instr in instrs:
