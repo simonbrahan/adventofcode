@@ -2,18 +2,25 @@ from collections import defaultdict
 import re
 
 class Processor:
-    def __init__(self, instrs):
+    def __init__(self, instrs, procid):
+        self.procid = procid
         self.instrs = instrs
         self.registers = defaultdict(int)
+        self.registers['p'] = procid
         self.rcv_queue = []
         self.instr_pos = 0
         self.waiting = False
+        self.sent_val_count = 0
 
     def register_partner(self, other_processor):
         self.partner = other_processor
 
     def rcv(self, val):
         self.rcv_queue.append(val)
+        self.waiting = False
+
+    def broadcast_sent_val_count(self):
+        print 'proc ' + str(self.procid) + ' sent ' + str(self.sent_val_count) + ' values'
 
     def run(self):
         def resolve(param):
@@ -23,10 +30,20 @@ class Processor:
                 return self.registers[param]
 
         while -1 < self.instr_pos < len(self.instrs):
+            if self.waiting:
+                if self.partner.waiting:
+                    print 'Deadlock!'
+                    self.broadcast_sent_val_count()
+                    self.partner.broadcast_sent_val_count()
+                    break
+                else:
+                    continue
+
             instr, x, y = self.instrs[self.instr_pos]
 
             if instr == 'snd':
                 self.partner.rcv(resolve(x))
+                self.sent_val_count += 1
             if instr == 'set':
                 self.registers[x] = resolve(y)
             if instr == 'add':
@@ -38,7 +55,7 @@ class Processor:
             if instr == 'rcv':
                 if not self.rcv_queue:
                     self.waiting = True
-                    break
+                    continue
                 else:
                     self.registers[x] = self.rcv_queue.pop(0)
             if instr == 'jgz' and resolve(x) > 0:
@@ -46,9 +63,6 @@ class Processor:
                 continue
 
             self.instr_pos += 1
-
-        print self.registers.items()
-
 
 
 def parse_instr(instr):
