@@ -17,7 +17,6 @@ class Processor:
 
     def rcv(self, val):
         self.rcv_queue.append(val)
-        self.waiting = False
 
     def broadcast_sent_val_count(self):
         print 'proc ' + str(self.procid) + ' sent ' + str(self.sent_val_count) + ' values'
@@ -30,15 +29,6 @@ class Processor:
                 return self.registers[param]
 
         while -1 < self.instr_pos < len(self.instrs):
-            if self.waiting:
-                if self.partner.waiting:
-                    print 'Deadlock!'
-                    self.broadcast_sent_val_count()
-                    self.partner.broadcast_sent_val_count()
-                    break
-                else:
-                    continue
-
             instr, x, y = self.instrs[self.instr_pos]
 
             if instr == 'snd':
@@ -53,11 +43,17 @@ class Processor:
             if instr == 'mod':
                 self.registers[x] %= resolve(y)
             if instr == 'rcv':
-                if not self.rcv_queue:
-                    self.waiting = True
-                    continue
-                else:
+                if self.rcv_queue:
+                    self.waiting = False
                     self.registers[x] = self.rcv_queue.pop(0)
+                else:
+                    self.waiting = True
+                    if self.partner.waiting:
+                        print 'proc ' + str(self.procid) + ' deadlock! sent ' + str(self.sent_val_count)
+                        break
+
+                    continue
+
             if instr == 'jgz' and resolve(x) > 0:
                 self.instr_pos += resolve(y)
                 continue
