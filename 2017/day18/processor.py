@@ -22,7 +22,7 @@ class Processor:
         return self.finished or len(self.rcv_queue) is 0
 
     def broadcast_sent_val_count(self):
-        print 'proc ' + str(self.procid) + ' sent ' + str(self.sent_val_count) + ' values'
+        print 'proc ' + str(self.procid) + ' sent ' + str(self.sent_val_count) + ' values\n'
 
     def run(self):
         def resolve(param):
@@ -46,14 +46,23 @@ class Processor:
             if instr == 'mod':
                 self.registers[x] %= resolve(y)
             if instr == 'rcv':
-                # If there are queued values from the partner...
-                if self.rcv_queue:
-                    self.registers[x] = self.rcv_queue.pop(0)
-                # If the partner has stopped...
-                elif self.partner.stopped():
+                """
+                    This is a nasty conditional
+                    Ordinarily it would be formatted:
+
+                    if self.rcv_queue:
+                    elif self.partner.stopped():
+                    else:
+
+                    but this produces a race condition
+                    as it's possible for the partner to "look" stopped
+                    before its last value has arrived
+                """
+                if self.partner.stopped() and not self.rcv_queue:
                     self.broadcast_sent_val_count()
                     break
-                # If there are no queued values but partner is still working...
+                elif self.rcv_queue:
+                    self.registers[x] = self.rcv_queue.pop(0)
                 else:
                     continue
 
