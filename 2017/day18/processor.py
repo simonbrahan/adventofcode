@@ -9,14 +9,17 @@ class Processor:
         self.registers['p'] = procid
         self.rcv_queue = []
         self.instr_pos = 0
-        self.waiting = False
         self.sent_val_count = 0
+        self.finished = False
 
     def register_partner(self, other_processor):
         self.partner = other_processor
 
     def rcv(self, val):
         self.rcv_queue.append(val)
+
+    def stopped(self):
+        return self.finished or len(self.rcv_queue) is 0
 
     def broadcast_sent_val_count(self):
         print 'proc ' + str(self.procid) + ' sent ' + str(self.sent_val_count) + ' values'
@@ -43,15 +46,15 @@ class Processor:
             if instr == 'mod':
                 self.registers[x] %= resolve(y)
             if instr == 'rcv':
+                # If there are queued values from the partner...
                 if self.rcv_queue:
-                    self.waiting = False
                     self.registers[x] = self.rcv_queue.pop(0)
+                # If the partner has stopped...
+                elif self.partner.stopped():
+                    self.broadcast_sent_val_count()
+                    break
+                # If there are no queued values but partner is still working...
                 else:
-                    self.waiting = True
-                    if self.partner.waiting:
-                        print 'proc ' + str(self.procid) + ' deadlock! sent ' + str(self.sent_val_count)
-                        break
-
                     continue
 
             if instr == 'jgz' and resolve(x) > 0:
@@ -59,6 +62,8 @@ class Processor:
                 continue
 
             self.instr_pos += 1
+
+        self.finished = True
 
 
 def parse_instr(instr):
