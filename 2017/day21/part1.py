@@ -6,6 +6,10 @@ def show_img(image):
         print ''.join(line)
 
 
+def count_lit_pixels(image):
+    return sum(map(lambda row: sum(pixel is '#' for pixel in row), image))
+
+
 def rotate_pattern(pattern):
     return tuple(tuple(row) for row in list(zip(*reversed(pattern))))
 
@@ -88,5 +92,5 @@ image = (('.','#','.'),('.','.','#'),('#','#','#'))
 
 for i in range(5):
     image = expand_img(image, patterns)
-    print '- -'
-    show_img(image)
+
+print count_lit_pixels(image), 'pixels are on'
