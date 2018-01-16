@@ -1,4 +1,5 @@
-import itertools
+from collections import defaultdict
+from math import sqrt, floor
 
 def show_img(image):
     for line in image:
@@ -40,7 +41,44 @@ def parse_line(line):
 
 
 def chunk_img(img):
-    chunk_width = 3 if len(img[0][0]) % 3 is 0 else 2
+    chunk_width = 3 if len(img[0]) % 3 is 0 else 2
+    img_side = len(img[0])
+    output = []
+    for i in range(0, img_side, chunk_width):
+        for j in range(0, img_side, chunk_width):
+            chunk = []
+            for k in range(chunk_width):
+                chunk.append(tuple(img[i+k][j:j+chunk_width]))
+
+            output.append(tuple(chunk))
+
+    return output
+
+
+def unchunk_img(chunks):
+    chunk_width = len(chunks[0][0])
+    img_side_chunks = sqrt(len(chunks))
+
+    output = defaultdict(list)
+    for chunk_id, chunk in enumerate(chunks):
+        output_chunk_row = int(floor(chunk_id / float(img_side_chunks))) * chunk_width
+        for chunk_row_id, chunk_row in enumerate(chunk):
+            output_row =  output_chunk_row + chunk_row_id
+            output[output_row] += list(chunk_row)
+
+    return tuple(tuple(row) for row in output.values())
+
+
+def expand_img(image, patterns):
+    chunks = chunk_img(image)
+    expanded_chunks = []
+
+    def swap_on_pattern(chunk, patterns):
+        for pattern in patterns:
+            if chunk in pattern['match']:
+                return pattern['out']
+
+    return unchunk_img([swap_on_pattern(chunk, patterns) for chunk in chunks])
 
 
 with open('input.txt') as input_file:
@@ -48,7 +86,7 @@ with open('input.txt') as input_file:
 
 image = (('.','#','.'),('.','.','#'),('#','#','#'))
 
-show_img(image)
-for pattern in patterns:
-    if image in pattern['match']:
-        show_img(pattern['out'])
+for i in range(5):
+    image = expand_img(image, patterns)
+    print '- -'
+    show_img(image)
