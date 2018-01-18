@@ -11,6 +11,7 @@ class Processor:
         self.instr_pos = 0
         self.sent_val_count = 0
         self.finished = False
+        self.mul_count = 0
 
     def register_partner(self, other_processor):
         self.partner = other_processor
@@ -41,7 +42,10 @@ class Processor:
                 self.registers[x] = resolve(y)
             if instr == 'add':
                 self.registers[x] += resolve(y)
+            if instr == 'sub':
+                self.registers[x] -= resolve(y)
             if instr == 'mul':
+                self.mul_count += 1
                 self.registers[x] *= resolve(y)
             if instr == 'mod':
                 self.registers[x] %= resolve(y)
@@ -67,6 +71,9 @@ class Processor:
                     continue
 
             if instr == 'jgz' and resolve(x) > 0:
+                self.instr_pos += resolve(y)
+                continue
+            if instr == 'jnz' and resolve(x) is not 0:
                 self.instr_pos += resolve(y)
                 continue
 
