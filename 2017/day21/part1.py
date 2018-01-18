@@ -45,7 +45,7 @@ def parse_line(line):
 
 
 def chunk_img(img):
-    chunk_width = 3 if len(img[0]) % 3 is 0 else 2
+    chunk_width = 2 if len(img[0]) % 2 is 0 else 3
     img_side = len(img[0])
     output = []
     for i in range(0, img_side, chunk_width):
