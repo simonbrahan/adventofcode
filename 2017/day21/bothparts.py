@@ -88,9 +88,12 @@ def expand_img(image, patterns):
 with open('input.txt') as input_file:
     patterns = [parse_line(line) for line in input_file]
 
-image = (('.','#','.'),('.','.','#'),('#','#','#'))
 
-for i in range(5):
-    image = expand_img(image, patterns)
+for iterations in [5, 18]:
+    image = (('.','#','.'),('.','.','#'),('#','#','#'))
 
-print count_lit_pixels(image), 'pixels are on'
+    for i in range(iterations):
+        image = expand_img(image, patterns)
+
+    print 'After', iterations, 'iterations', count_lit_pixels(image), 'pixels are on'
+
