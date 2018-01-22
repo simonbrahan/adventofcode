@@ -96,4 +96,4 @@ def parse_instr(instr):
     elif str_is_num(instr_parts[2]):
         instr_parts[2] = int(instr_parts[2])
 
-    return instr_parts
+    return instr_parts[:3]
