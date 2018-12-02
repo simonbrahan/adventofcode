@@ -1,4 +1,4 @@
-(def input-lines (map clojure.string/trim-newline (line-seq (clojure.java.io/reader "input.in"))))
+(def input-lines (line-seq (clojure.java.io/reader "input.in")))
 
 (defn has-double [id]
   (boolean (some #{2} (vals (frequencies id)))))
