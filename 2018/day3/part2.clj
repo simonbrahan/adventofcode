@@ -5,6 +5,9 @@
         (map read-string (rest (re-matches #"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)" input-line)))]
     [ id [left-x top-y] [(+ left-x (dec width)) (+ top-y (dec height))] ]))
 
+(defn rect-id [rect]
+  (first rect))
+
 (defn point-to-left [p1 p2]
   (< (first p1) (first p2)))
 
@@ -22,7 +25,7 @@
 (defn rectangle-has-overlap [rect rects]
   (< 1 (count (filter identity (map #(rectangles-overlap rect %) rects)))))
 
-(prn (let [rects (map input-to-rectangle input-lines)]
-  (for [rect rects]
-    (when-not (rectangle-has-overlap rect rects) rect))))
+(let [rects (map input-to-rectangle input-lines)
+     rects-have-overlaps (map (fn [rect] (list (rect-id rect) (rectangle-has-overlap rect rects))) rects)]
+  (prn (rect-id (first (filter #(not (last %)) rects-have-overlaps)))))
 
