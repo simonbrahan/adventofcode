@@ -17,7 +17,7 @@
 (defn parse-line [input-line]
   (let [[date hour minute note] (rest (re-matches #"\[(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2})\] ([\w# ]+)" input-line))
         [guard-id op] (parse-note note)]
-    (zipmap [:date :hour :minute :guard-id :op] [date hour minute guard-id op])))
+    (zipmap [:date :hour :minute :guard-id :op] [date (read-string hour) (read-string minute) guard-id op])))
 
 (defn parse-input [input-lines]
   (map parse-line input-lines))
@@ -38,4 +38,18 @@
     []
     ordered-notes))
 
-(let [notes (-> input-lines prepare-notes add-guard-ids)] (prn notes))
+; Gets total times asleep for each guard mentioned in list of notes
+(defn get-total-sleep-times [notes]
+  (let [bad- (fnil - 0)
+        bad+ (fnil + 0)
+        change-times (fn [times note op] (assoc times (note :guard-id) (op (times (note :guard-id)) (note :minute))))]
+    (reduce
+      (fn [times note]
+        (cond
+          (= (note :op) :up) (change-times times note bad+)
+          (= (note :op) :down) (change-times times note bad-)
+          :else times))
+      {}
+      notes)))
+
+(let [notes (-> input-lines prepare-notes add-guard-ids get-total-sleep-times)] (prn notes))
