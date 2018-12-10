@@ -17,7 +17,7 @@
 (defn parse-line [input-line]
   (let [[date hour minute note] (rest (re-matches #"\[(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2})\] ([\w# ]+)" input-line))
         [guard-id op] (parse-note note)]
-    (zipmap [:date :hour :minute :guard-id :op] [date (read-string hour) (read-string minute) guard-id op])))
+    (zipmap [:date :hour :minute :guard-id :op] [date (Integer/parseInt hour) (Integer/parseInt minute) guard-id op])))
 
 (defn parse-input [input-lines]
   (map parse-line input-lines))
@@ -38,18 +38,24 @@
     []
     ordered-notes))
 
-; Gets total times asleep for each guard mentioned in list of notes
-(defn get-total-sleep-times [notes]
-  (let [bad- (fnil - 0)
-        bad+ (fnil + 0)
-        change-times (fn [times note op] (assoc times (note :guard-id) (op (times (note :guard-id)) (note :minute))))]
-    (reduce
-      (fn [times note]
-        (cond
-          (= (note :op) :up) (change-times times note bad+)
-          (= (note :op) :down) (change-times times note bad-)
-          :else times))
-      {}
-      notes)))
+; Get hash map of minutes spent asleep keyed by guard
+(defn get-all-sleep-minutes [ordered-notes]
+  (let [badconj (fnil conj [])
+        times-by-guard (reduce
+                         (fn [times note]
+                           (assoc times (note :guard-id) (badconj (times (note :guard-id)) (note :minute))))
+                         {}
+                         (remove (fn [note] (= :start (note :op))) ordered-notes))]
+    (into {} (for
+      [[guard-id times] times-by-guard]
+      [guard-id (mapcat (fn [startstop] (apply range startstop)) (partition 2 times))]))))
 
-(let [notes (-> input-lines prepare-notes add-guard-ids get-total-sleep-times)] (prn notes))
+; Given map of minutes asleep keyed by guard, return total times spent asleep
+(defn total-sleep-minutes [sleep-minutes]
+  (into {} (for [[guard-id minutes] (into [] sleep-minutes)] [guard-id (count minutes)])))
+
+(let [minutes-asleep-by-guard (-> input-lines prepare-notes add-guard-ids get-all-sleep-minutes)
+      total-times-asleep (total-sleep-minutes minutes-asleep-by-guard)
+      sleepiest-guard (first (apply max-key val total-times-asleep))
+      sleepiest-minutes (first (apply max-key val (frequencies (minutes-asleep-by-guard sleepiest-guard))))]
+  (prn (* sleepiest-guard sleepiest-minutes)))
